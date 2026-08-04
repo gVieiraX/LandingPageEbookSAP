@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteca ABAP PRO — Soluções Práticas para Desenvolvedores SAP</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/cursoabap.png">
     <meta name="description"
         content="eBook com soluções práticas e código comentado para desenvolvedores SAP ABAP. Open SQL, ALV, OO ABAP, Performance, Debug e mais.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -235,8 +236,17 @@
             color: var(--text-muted);
         }
 
-        .nav-links a:hover {
-            color: var(--text);
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            transition: color .3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus,
+        .nav-links a:active,
+        .nav-links a.active {
+            color: #c75b1b;
         }
 
         .nav-cta {
@@ -833,7 +843,12 @@
 
     <header>
         <nav class="nav wrap">
-            <div class="logo">ABAP<span>_PRO</span></div>
+            <div class="logo">
+                <a href="#hero" style="text-decoration: none; color: white;">
+                    ABAP<span>_PRO</span>
+                </a>
+            </div>
+
             <div class="nav-links">
                 <a href="#solucao">Recursos</a>
                 <a href="#publico">Para quem é</a>
@@ -846,7 +861,7 @@
 
     <main>
         <!-- HERO -->
-        <section class="hero">
+        <section class="hero" id="hero">
             <div class="wrap hero-grid">
                 <div>
                     <div class="eyebrow">material de consulta rápida para dev SAP</div>
@@ -1154,6 +1169,30 @@
                     item.classList.add('open');
                     btn.setAttribute('aria-expanded', 'true');
                     btn.querySelector('.toggle').textContent = '–';
+                }
+            });
+        });
+    </script>
+
+    <script>
+        const sections = document.querySelectorAll("section[id]");
+        const navLinks = document.querySelectorAll(".nav-links a");
+
+        window.addEventListener("scroll", () => {
+            let current = "";
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 120;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute("id");
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove("active");
+
+                if (link.getAttribute("href") === "#" + current) {
+                    link.classList.add("active");
                 }
             });
         });
