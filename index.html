@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca ABAP PRO — Soluções Práticas para Desenvolvedores SAP</title>
+    <meta name="description"
+        content="eBook com soluções práticas e código comentado para desenvolvedores SAP ABAP. Open SQL, ALV, OO ABAP, Performance, Debug e mais.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0e1a;
+            --bg-panel: #111827;
+            --bg-panel-2: #0d1320;
+            --line: #232d42;
+            --line-soft: #1a2236;
+            --text: #edf1f8;
+            --text-muted: #8a94ac;
+            --text-faint: #5c6784;
+            --accent: #ff7a29;
+            --accent-dim: #c75b1b;
+            --accent-soft: rgba(255, 122, 41, 0.12);
+            --green: #57d9a3;
+            --red: #ff5470;
+            --mono: 'JetBrains Mono', ui-monospace, monospace;
+            --sans: 'Inter', -apple-system, sans-serif;
+            --radius: 10px;
+            --maxw: 1180px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            * {
+                animation-duration: 0.001s !important;
+                transition-duration: 0.001s !important;
+            }
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: #0a0e1a;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        .wrap {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ---------- Editor window chrome (signature element) ---------- */
+        .editor {
+            background: var(--bg-panel);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
+        }
+
+        .editor-titlebar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 16px;
+            background: var(--bg-panel-2);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot.r {
+            background: #ff5f56;
+        }
+
+        .dot.y {
+            background: #ffbd2e;
+        }
+
+        .dot.g {
+            background: #27c93f;
+        }
+
+        .editor-tabs {
+            display: flex;
+            gap: 2px;
+            font-family: var(--mono);
+            font-size: 12.5px;
+            color: var(--text-muted);
+        }
+
+        .etab {
+            padding: 5px 12px;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .etab.active {
+            background: var(--bg-panel);
+            color: var(--text);
+            border: 1px solid var(--line);
+            border-bottom: 1px solid var(--bg-panel);
+            margin-bottom: -1px;
+        }
+
+        .editor-body {
+            padding: 22px 24px;
+            font-family: var(--mono);
+            font-size: 13.5px;
+            overflow-x: auto;
+        }
+
+        .ln {
+            display: inline-block;
+            width: 26px;
+            color: var(--text-faint);
+            user-select: none;
+        }
+
+        .code-line {
+            white-space: pre;
+        }
+
+        .kw {
+            color: var(--accent);
+        }
+
+        .str {
+            color: var(--green);
+        }
+
+        .cmt {
+            color: var(--text-faint);
+            font-style: italic;
+        }
+
+        .fn {
+            color: #7fb3ff;
+        }
+
+        .cursor-blink {
+            display: inline-block;
+            width: 7px;
+            height: 14px;
+            background: var(--accent);
+            vertical-align: middle;
+            animation: blink 1s steps(2) infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* ---------- Header ---------- */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(10, 14, 26, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line-soft);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+        }
+
+        .logo {
+            font-family: var(--mono);
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.02em;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            font-size: 14.5px;
+            color: var(--text-muted);
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-cta {
+            font-family: var(--mono);
+            font-size: 13.5px;
+            font-weight: 600;
+            background: var(--accent);
+            color: #170b03;
+            padding: 9px 16px;
+            border-radius: 7px;
+            white-space: nowrap;
+        }
+
+        .nav-cta:hover {
+            background: #ff8c47;
+        }
+
+        .menu-mobile {
+            display: none;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            padding: 76px 0 64px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            gap: 56px;
+            align-items: center;
+        }
+
+        .eyebrow {
+            font-family: var(--mono);
+            font-size: 12.5px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .eyebrow::before {
+            content: "//";
+            color: var(--text-faint);
+        }
+
+        h1 {
+            font-family: var(--mono);
+            font-weight: 700;
+            font-size: clamp(32px, 4.4vw, 52px);
+            line-height: 1.12;
+            letter-spacing: -0.01em;
+            margin-bottom: 20px;
+        }
+
+        h1 .hl {
+            color: var(--accent);
+        }
+
+        .hero-sub {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 520px;
+            margin-bottom: 30px;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            font-family: var(--mono);
+            font-weight: 700;
+            font-size: 15px;
+            background: var(--accent);
+            color: #170b03;
+            padding: 15px 26px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 12px 30px -10px rgba(255, 122, 41, 0.5);
+        }
+
+        .btn-primary:hover {
+            background: #ff8c47;
+        }
+
+        .btn-secondary {
+            font-size: 14.5px;
+            color: var(--text-muted);
+            padding: 15px 4px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .btn-secondary:hover {
+            color: var(--text);
+        }
+
+        .trust-row {
+            display: flex;
+            gap: 22px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: var(--text-faint);
+            font-family: var(--mono);
+        }
+
+        .trust-row li {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .trust-row li::before {
+            content: "✓";
+            color: var(--green);
+        }
+
+        /* ---------- Section shells ---------- */
+        section {
+            padding: 88px 0;
+        }
+
+        .section-head {
+            max-width: 640px;
+            margin-bottom: 48px;
+        }
+
+        .section-tag {
+            font-family: var(--mono);
+            font-size: 12.5px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 14px;
+        }
+
+        h2 {
+            font-family: var(--mono);
+            font-size: clamp(24px, 3vw, 34px);
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 14px;
+        }
+
+        .section-sub {
+            color: var(--text-muted);
+            font-size: 16px;
+            max-width: 560px;
+        }
+
+        /* ---------- Error/dump styled problem box ---------- */
+        .dump {
+            border: 1px solid var(--red);
+            background: linear-gradient(180deg, rgba(255, 84, 112, 0.08), rgba(255, 84, 112, 0.02));
+            border-radius: var(--radius);
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .dump-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(255, 84, 112, 0.1);
+            border-bottom: 1px solid rgba(255, 84, 112, 0.3);
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        .dump-body {
+            padding: 24px 26px 28px;
+        }
+
+        .dump-body p {
+            color: var(--text-muted);
+            font-size: 15.5px;
+            margin-bottom: 10px;
+        }
+
+        .dump-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .dump-code {
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--text-faint);
+            margin-top: 14px;
+        }
+
+        /* ---------- Package explorer (signature repeat) ---------- */
+        .explorer-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 0;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .explorer-side {
+            background: var(--bg-panel-2);
+            border-right: 1px solid var(--line);
+            padding: 18px 0;
+            font-family: var(--mono);
+            font-size: 13.5px;
+        }
+
+        .exp-root {
+            padding: 0 18px 12px;
+            color: var(--text-faint);
+            font-size: 11.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .exp-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 18px;
+            color: var(--text-muted);
+            cursor: default;
+            border-left: 2px solid transparent;
+        }
+
+        .exp-item.active {
+            background: var(--accent-soft);
+            color: var(--text);
+            border-left: 2px solid var(--accent);
+        }
+
+        .exp-item .ic {
+            color: var(--text-faint);
+            width: 14px;
+            text-align: center;
+        }
+
+        .exp-item.active .ic {
+            color: var(--accent);
+        }
+
+        .explorer-main {
+            padding: 32px 34px;
+            background: var(--bg-panel);
+        }
+
+        .feat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px 28px;
+        }
+
+        .feat {
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--line-soft);
+        }
+
+        .feat-num {
+            font-family: var(--mono);
+            color: var(--accent);
+            font-size: 12.5px;
+            margin-bottom: 8px;
+        }
+
+        .feat h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .feat p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* ---------- Audience cards ---------- */
+        .audience-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .aud-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 26px 22px;
+        }
+
+        .aud-card .tag {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 10px;
+        }
+
+        .aud-card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .aud-card p {
+            font-size: 13.5px;
+            color: var(--text-muted);
+        }
+
+        /* ---------- Proof / comment block ---------- */
+        .comment-block {
+            font-family: var(--mono);
+            font-size: 15.5px;
+            color: var(--text-muted);
+            border-left: 3px solid var(--accent);
+            padding: 6px 0 6px 26px;
+            line-height: 1.9;
+        }
+
+        .comment-block .lead {
+            color: var(--text-faint);
+        }
+
+        /* ---------- Pricing ---------- */
+        .price-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .price-left {
+            padding: 40px 38px;
+            background: var(--bg-panel);
+        }
+
+        .price-right {
+            padding: 40px 38px;
+            background: var(--bg-panel-2);
+            border-left: 1px solid var(--line);
+        }
+
+        .tx-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--mono);
+            font-size: 13.5px;
+            color: var(--text-faint);
+            background: var(--bg);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 9px 14px;
+            margin-bottom: 26px;
+        }
+
+        .tx-bar .tx-code {
+            color: var(--green);
+        }
+
+        .price-tag {
+            font-family: var(--mono);
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .price-old {
+            color: var(--text-faint);
+            text-decoration: line-through;
+            font-size: 18px;
+        }
+
+        .price-new {
+            font-size: 44px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .price-cur {
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        .price-note {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 26px;
+        }
+
+        .price-list {
+            list-style: none;
+            margin-bottom: 28px;
+        }
+
+        .price-list li {
+            display: flex;
+            gap: 10px;
+            font-size: 14.5px;
+            color: var(--text-muted);
+            padding: 7px 0;
+        }
+
+        .price-list li::before {
+            content: "✓";
+            color: var(--green);
+            font-family: var(--mono);
+            font-weight: 700;
+        }
+
+        .btn-f8 {
+            font-family: var(--mono);
+            font-weight: 700;
+            font-size: 15px;
+            background: var(--accent);
+            color: #170b03;
+            width: 100%;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 12px 30px -10px rgba(255, 122, 41, 0.5);
+        }
+
+        .btn-f8:hover {
+            background: #ff8c47;
+        }
+
+        .key-f8 {
+            font-family: var(--mono);
+            font-size: 11.5px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 2px 7px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.4);
+        }
+
+        .guarantee {
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--text-faint);
+            text-align: center;
+        }
+
+        /* ---------- FAQ ---------- */
+        .faq-item {
+            border-bottom: 1px solid var(--line-soft);
+        }
+
+        .faq-q {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 15.5px;
+            font-weight: 600;
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .faq-q .toggle {
+            color: var(--accent);
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .faq-a {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.25s ease;
+            color: var(--text-muted);
+            font-size: 14.5px;
+        }
+
+        .faq-a-inner {
+            padding-bottom: 20px;
+            max-width: 640px;
+        }
+
+        .faq-item.open .faq-a {
+            max-height: 200px;
+        }
+
+        /* ---------- Footer ---------- */
+        footer {
+            border-top: 1px solid var(--line-soft);
+            padding: 44px 0 36px;
+        }
+
+        .footer-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-note {
+            font-size: 13px;
+            color: var(--text-faint);
+            max-width: 460px;
+        }
+
+        .footer-cta {
+            font-family: var(--mono);
+            font-size: 13.5px;
+            font-weight: 700;
+            background: var(--accent);
+            color: #170b03;
+            padding: 11px 18px;
+            border-radius: 7px;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width:900px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .explorer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .explorer-side {
+                display: none;
+            }
+
+            .feat-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .audience-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .price-wrap {
+                grid-template-columns: 1fr;
+            }
+
+            .price-right {
+                border-left: none;
+                border-top: 1px solid var(--line);
+            }
+        }
+
+        @media (max-width:520px) {
+            .audience-grid {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 64px 0;
+            }
+
+            .hero {
+                padding: 56px 0 48px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav class="nav wrap">
+            <div class="logo">ABAP<span>_PRO</span></div>
+            <div class="nav-links">
+                <a href="#solucao">Recursos</a>
+                <a href="#publico">Para quem é</a>
+                <a href="#preco">Preço</a>
+                <a href="#faq">FAQ</a>
+            </div>
+            <a href="#preco" class="nav-cta">/nCOMPRAR</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section class="hero">
+            <div class="wrap hero-grid">
+                <div>
+                    <div class="eyebrow">material de consulta rápida para dev SAP</div>
+                    <h1>Pare de procurar código ABAP no fórum errado.<br><span class="hl">Comece na Biblioteca ABAP
+                            PRO.</span></h1>
+                    <p class="hero-sub">Soluções práticas, código real e comentado, e as explicações que faltam quando
+                        você mais precisa: Open SQL, ALV, OO ABAP, Performance, Debug e muito mais — tudo num só lugar.
+                    </p>
+                    <div class="hero-ctas">
+                        <a href="#preco" class="btn-primary">Quero garantir meu acesso →</a>
+                        <a href="#solucao" class="btn-secondary">Ver o que tem dentro</a>
+                    </div>
+                    <ul class="trust-row">
+                        <li>PDF digital</li>
+                        <li>Acesso imediato</li>
+                        <li>Código 100% comentado</li>
+                    </ul>
+                </div>
+
+                <div class="editor">
+                    <div class="editor-titlebar">
+                        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span
+                                class="dot g"></span></div>
+                        <div class="editor-tabs">
+                            <div class="etab active">README.abap</div>
+                            <div class="etab">z_sales_report.abap</div>
+                        </div>
+                    </div>
+                    <div class="editor-body">
+                        <div class="code-line"><span class="ln">01</span><span
+                                class="cmt">*&---------------------------------------------------------*</span></div>
+                        <div class="code-line"><span class="ln">02</span><span class="cmt">*& Relatório: Biblioteca ABAP
+                                PRO</span></div>
+                        <div class="code-line"><span class="ln">03</span><span class="cmt">*& Descrição: soluções
+                                práticas para dev SAP</span></div>
+                        <div class="code-line"><span class="ln">04</span><span
+                                class="cmt">*&---------------------------------------------------------*</span></div>
+                        <div class="code-line"><span class="ln">05</span></div>
+                        <div class="code-line"><span class="ln">06</span><span class="kw">REPORT</span> z_carreira_abap.
+                        </div>
+                        <div class="code-line"><span class="ln">07</span></div>
+                        <div class="code-line"><span class="ln">08</span><span class="kw">DATA</span>: gv_duvida <span
+                                class="kw">TYPE</span> string <span class="kw">VALUE</span> <span class="str">'como
+                                resolvo isso?'</span>.</div>
+                        <div class="code-line"><span class="ln">09</span></div>
+                        <div class="code-line"><span class="ln">10</span><span class="kw">IF</span> gv_duvida <span
+                                class="kw">IS NOT INITIAL</span>.</div>
+                        <div class="code-line"><span class="ln">11</span> <span
+                                class="fn">abrir_biblioteca_abap_pro</span>( ).</div>
+                        <div class="code-line"><span class="ln">12</span> <span class="cmt">" código comentado, exemplo
+                                real, sem enrolação</span></div>
+                        <div class="code-line"><span class="ln">13</span><span class="kw">ENDIF</span>.<span
+                                class="cursor-blink"></span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROBLEMA -->
+        <section id="problema">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="section-tag">o problema</div>
+                    <h2>Você já viu essa tela antes.</h2>
+                    <p class="section-sub">Todo dev ABAP conhece a sensação: um erro no meio do código, um exemplo
+                        incompleto no fórum, e nenhuma explicação de por que aquilo aconteceu.</p>
+                </div>
+
+                <div class="dump">
+                    <div class="dump-head">⚠ RUNTIME ERROR: DEVELOPER_STUCK_AGAIN</div>
+                    <div class="dump-body">
+                        <p><strong>O que aconteceu:</strong> você encontrou um <code>FOR ALL ENTRIES</code> que trouxe
+                            registros duplicados, um ALV que não atualiza depois do refresh, ou um dump que ninguém no
+                            time sabe explicar.</p>
+                        <p><strong>Causa provável:</strong> falta de um material de consulta que explique o código linha
+                            a linha — não só o "copia e cola", mas o porquê.</p>
+                        <p><strong>Como resolver:</strong> ter, ao lado do seu editor, soluções prontas, comentadas e
+                            testadas para os problemas que realmente aparecem no dia a dia.</p>
+                        <div class="dump-code">CALL FUNCTION 'RESOLVER_PROBLEMA' EXCEPTIONS material_ruim = 1
+                            falta_de_tempo = 2.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOLUÇÃO / RECURSOS -->
+        <section id="solucao">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="section-tag">a solução</div>
+                    <h2>Um pacote de soluções prontas para abrir e usar</h2>
+                    <p class="section-sub">Cada capítulo segue o mesmo padrão: o que é, quando usar, quando não usar,
+                        código completo comentado, erros comuns e dica de performance.</p>
+                </div>
+
+                <div class="explorer-grid">
+                    <div class="explorer-side">
+                        <div class="exp-root">📁 biblioteca_abap_pro</div>
+                        <div class="exp-item active"><span class="ic">📄</span> Open_SQL.abap</div>
+                        <div class="exp-item"><span class="ic">📄</span> Internal_Tables.abap</div>
+                        <div class="exp-item"><span class="ic">📄</span> ALV_e_OO_ALV.abap</div>
+                        <div class="exp-item"><span class="ic">📄</span> Orientacao_Objetos.abap</div>
+                        <div class="exp-item"><span class="ic">📄</span> Performance.abap</div>
+                        <div class="exp-item"><span class="ic">📄</span> BAPI_RFC.abap</div>
+                        <div class="exp-item"><span class="ic">📄</span> Enhancements_BAdIs.abap</div>
+                        <div class="exp-item"><span class="ic">📄</span> Debug_ST22_SU53.abap</div>
+                        <div class="exp-item"><span class="ic">📄</span> Clean_Code.abap</div>
+                        <div class="exp-item"><span class="ic">📁</span> Bonus_ChatGPT_Prompts</div>
+                    </div>
+                    <div class="explorer-main">
+                        <div class="feat-grid">
+                            <div class="feat">
+                                <div class="feat-num">01</div>
+                                <h3>Open SQL sem armadilhas</h3>
+                                <p>JOINs, SELECT eficiente e as 20 armadilhas do <code>FOR ALL ENTRIES</code> que
+                                    costumam gerar duplicidade e lentidão.</p>
+                            </div>
+                            <div class="feat">
+                                <div class="feat-num">02</div>
+                                <h3>ALV, Classic e OO, lado a lado</h3>
+                                <p>Comparação prática entre REUSE_ALV_GRID, CL_GUI_ALV_GRID e CL_SALV_TABLE — com código
+                                    completo de cada um.</p>
+                            </div>
+                            <div class="feat">
+                                <div class="feat-num">03</div>
+                                <h3>Orientação a Objetos aplicada</h3>
+                                <p>Classes, interfaces, herança e tratamento de exceções explicados com um exemplo de
+                                    sistema real, não só teoria.</p>
+                            </div>
+                            <div class="feat">
+                                <div class="feat-num">04</div>
+                                <h3>Performance e Debug na prática</h3>
+                                <p>Como usar SAT, ST05, ST22, SU53 e SM12/13 — mais 50 dicas de performance para revisar
+                                    seu próprio código.</p>
+                            </div>
+                            <div class="feat">
+                                <div class="feat-num">05</div>
+                                <h3>Integração: BAPI, RFC e Enhancements</h3>
+                                <p>Chamadas de BAPI com tratamento de retorno, RFC e onde usar BAdI em vez de modificar
+                                    o standard.</p>
+                            </div>
+                            <div class="feat">
+                                <div class="feat-num">06</div>
+                                <h3>Tabelas de referência + Bônus</h3>
+                                <p>Transações, tabelas SAP, dumps e mensagens mais comuns, além de 100 prompts prontos
+                                    para usar com ChatGPT.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PARA QUEM É -->
+        <section id="publico">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="section-tag">para quem é</div>
+                    <h2>Feito para quem programa — ou vai começar a programar — em SAP</h2>
+                </div>
+                <div class="audience-grid">
+                    <div class="aud-card">
+                        <div class="tag">Perfil 01</div>
+                        <h3>Dev ABAP Jr</h3>
+                        <p>Quer parar de aprender só na tentativa e erro e ter uma base sólida de referência.</p>
+                    </div>
+                    <div class="aud-card">
+                        <div class="tag">Perfil 02</div>
+                        <h3>Dev ABAP Pleno</h3>
+                        <p>Precisa de consulta rápida em projeto, sem reler documentação inteira toda vez.</p>
+                    </div>
+                    <div class="aud-card">
+                        <div class="tag">Perfil 03</div>
+                        <h3>Consultor técnico SAP</h3>
+                        <p>Transita entre módulos e times, e quer um material único e confiável de apoio.</p>
+                    </div>
+                    <div class="aud-card">
+                        <div class="tag">Perfil 04</div>
+                        <h3>Migrando para SAP</h3>
+                        <p>Vem de outra linguagem e quer entender ABAP com exemplos reais, não só sintaxe solta.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROVA -->
+        <section id="prova">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="section-tag">por que confiar</div>
+                    <h2>Escrito para quem vai usar em código de verdade</h2>
+                </div>
+                <div class="comment-block">
+                    <span class="lead">/*</span><br>
+                    Todo o conteúdo é 100% em português, com código ABAP real, executável e comentado.<br>
+                    Nada de pseudocódigo, nada de "isso fica a cargo do leitor".<br>
+                    Cada solução mostra o problema, o código e o porquê — para você adaptar direto no seu projeto.<br>
+                    <span class="lead">*/</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- PREÇO -->
+        <section id="preco">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="section-tag">oferta</div>
+                    <h2>Menos que um almoço. Consulta para o resto do seu projeto.</h2>
+                </div>
+
+                <div class="price-wrap">
+                    <div class="price-left">
+                        <div class="tx-bar">/n <span class="tx-code">ZABAP_PRO</span> — acessar biblioteca completa
+                        </div>
+                        <div class="price-tag">
+                            <span class="price-old">R$97,00</span>
+                            <span class="price-cur">R$</span><span class="price-new">27,90</span>
+                        </div>
+                        <p class="price-note">Pagamento único. Sem assinatura, sem mensalidade.</p>
+                        <ul class="price-list">
+                            <li>eBook completo em PDF, alta resolução</li>
+                            <li>Código comentado e pronto para adaptar</li>
+                            <li>Tabelas de referência rápida (transações, tabelas, dumps)</li>
+                            <li>Bônus: 100 prompts para ChatGPT aplicados a ABAP</li>
+                            <li>Acesso imediato após a confirmação da compra</li>
+                        </ul>
+                    </div>
+                    <div class="price-right">
+                        <a href="https://pay.kiwify.com.br/y7GEkFn" class="btn-f8">Executar compra <span
+                                class="key-f8">F8</span></a>
+                        <p class="guarantee">Produto digital. Entrega imediata por e-mail após a confirmação do
+                            pagamento.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="section-tag">perguntas frequentes</div>
+                    <h2>Antes de você executar o F8</h2>
+                </div>
+
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <button class="faq-q" aria-expanded="false">É indicado para quem está começando em ABAP? <span
+                                class="toggle">+</span></button>
+                        <div class="faq-a">
+                            <div class="faq-a-inner">Sim. O material parte do básico da estrutura de programas e avança
+                                até tópicos de performance e integração, sempre com exemplos comentados.</div>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q" aria-expanded="false">Recebo o material na hora? <span
+                                class="toggle">+</span></button>
+                        <div class="faq-a">
+                            <div class="faq-a-inner">Sim, o acesso ao PDF é liberado assim que o pagamento é confirmado.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q" aria-expanded="false">Funciona em celular e tablet? <span
+                                class="toggle">+</span></button>
+                        <div class="faq-a">
+                            <div class="faq-a-inner">Sim, é um PDF digital — você pode ler em qualquer dispositivo com
+                                leitor de PDF.</div>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q" aria-expanded="false">Tem garantia? <span class="toggle">+</span></button>
+                        <div class="faq-a">
+                            <div class="faq-a-inner">Sim, a compra é processada pela Kiwify e segue a política de
+                                garantia da plataforma.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrap footer-grid">
+            <div>
+                <div class="logo">ABAP<span>_PRO</span></div>
+                <p class="footer-note" style="margin-top:8px;">Biblioteca ABAP PRO é um eBook digital em PDF. Produto de
+                    entrega imediata, sem envio físico.</p>
+            </div>
+            <a href="#preco" class="footer-cta">Quero garantir meu acesso</a>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.faq-q').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var item = btn.closest('.faq-item');
+                var isOpen = item.classList.contains('open');
+                document.querySelectorAll('.faq-item.open').forEach(function (o) {
+                    o.classList.remove('open');
+                    o.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+                    o.querySelector('.toggle').textContent = '+';
+                });
+                if (!isOpen) {
+                    item.classList.add('open');
+                    btn.setAttribute('aria-expanded', 'true');
+                    btn.querySelector('.toggle').textContent = '–';
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
