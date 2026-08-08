@@ -537,6 +537,141 @@
             font-size: 14px;
         }
 
+        /* ---------- Product preview gallery ---------- */
+        .preview-section {
+            position: relative;
+        }
+
+        .preview-head {
+            max-width: 720px;
+            margin-bottom: 42px;
+        }
+
+        .preview-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+            align-items: start;
+        }
+
+        .preview-card {
+            position: relative;
+            background: linear-gradient(145deg, #151d2d, #0d1320);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 10px;
+            overflow: hidden;
+            box-shadow: 0 18px 45px -28px rgba(0, 0, 0, 0.9);
+            cursor: zoom-in;
+            transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+        }
+
+        .preview-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 122, 41, .55);
+            box-shadow: 0 25px 55px -30px rgba(255, 122, 41, .35);
+        }
+
+        .preview-card::after {
+            content: "Clique para ampliar";
+            position: absolute;
+            left: 18px;
+            bottom: 18px;
+            padding: 7px 10px;
+            border-radius: 6px;
+            background: rgba(10, 14, 26, .88);
+            border: 1px solid var(--line);
+            color: var(--text-muted);
+            font-family: var(--mono);
+            font-size: 10px;
+            opacity: 0;
+            transform: translateY(5px);
+            transition: opacity .25s ease, transform .25s ease;
+            pointer-events: none;
+        }
+
+        .preview-card:hover::after {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .preview-card img {
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            object-fit: cover;
+            object-position: top center;
+            border-radius: 7px;
+            background: #fff;
+        }
+
+        .preview-card.featured {
+            grid-column: span 2;
+        }
+
+        .preview-card.featured img {
+            aspect-ratio: 16 / 10;
+            object-fit: contain;
+            background: #fff;
+        }
+
+        .preview-caption {
+            padding: 13px 7px 4px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-faint);
+        }
+
+        .preview-caption strong {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .preview-lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background: rgba(5, 8, 15, .94);
+            backdrop-filter: blur(8px);
+        }
+
+        .preview-lightbox.open {
+            display: flex;
+        }
+
+        .preview-lightbox img {
+            max-width: min(100%, 1050px);
+            max-height: 90vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .65);
+        }
+
+        .preview-close {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            background: var(--bg-panel);
+            color: var(--text);
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .preview-close:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
         /* ---------- Audience cards ---------- */
         .audience-grid {
             display: grid;
@@ -813,6 +948,14 @@
                 grid-template-columns: repeat(2, 1fr);
             }
 
+            .preview-gallery {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .preview-card.featured {
+                grid-column: span 2;
+            }
+
             .price-wrap {
                 grid-template-columns: 1fr;
             }
@@ -834,6 +977,24 @@
 
             .hero {
                 padding: 56px 0 48px;
+            }
+
+            .preview-gallery {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .preview-card.featured {
+                grid-column: span 1;
+            }
+
+            .preview-card.featured img,
+            .preview-card img {
+                aspect-ratio: 4 / 5;
+            }
+
+            .preview-card::after {
+                display: none;
             }
         }
     </style>
@@ -978,7 +1139,8 @@
                                 <div class="feat-num">01</div>
                                 <h3>Open SQL sem armadilhas</h3>
                                 <p>JOINs, SELECT eficiente e as armadilhas mais comuns do Open SQL e do
-                                    <code>FOR ALL ENTRIES</code> que costumam gerar duplicidade e lentidão.</p>
+                                    <code>FOR ALL ENTRIES</code> que costumam gerar duplicidade e lentidão.
+                                </p>
                             </div>
                             <div class="feat">
                                 <div class="feat-num">02</div>
@@ -1011,6 +1173,39 @@
                                     para usar com ChatGPT.</p>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <!-- PRÉVIA DO PRODUTO -->
+                <div class="preview-section">
+                    <div class="preview-head">
+                        <div class="section-tag">veja por dentro</div>
+                        <h2>Um material feito para ser usado de verdade</h2>
+                        <p class="section-sub">
+                            Veja algumas páginas da Biblioteca ABAP PRO antes de comprar.
+                            Layout profissional, conteúdo organizado e exemplos pensados para consulta rápida.
+                        </p>
+                    </div>
+
+                    <div class="preview-gallery">
+                        <div class="preview-card" data-preview="assets/pagina-02.png">
+                            <img src="assets/pagina-02.png" alt="Prévia da Biblioteca ABAP PRO — página 02"
+                                loading="lazy">
+                            <div class="preview-caption"><strong>02</strong> — Visão geral do conteúdo</div>
+                        </div>
+
+                        <div class="preview-card" data-preview="assets/pagina-04.png">
+                            <img src="assets/pagina-04.png" alt="Prévia da Biblioteca ABAP PRO — página 04"
+                                loading="lazy">
+                            <div class="preview-caption"><strong>04</strong> — Exemplo Real</div>
+                        </div>
+
+                        <div class="preview-card" data-preview="assets/pagina-03.png">
+                            <img src="assets/pagina-03.png" alt="Prévia da Biblioteca ABAP PRO — página 03"
+                                loading="lazy">
+                            <div class="preview-caption"><strong>03</strong> — Próximos Passos</div>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
@@ -1173,6 +1368,47 @@
                 }
             });
         });
+    </script>
+
+    <script>
+        /* Galeria: abrir a página em tamanho grande */
+        (function () {
+            const lightbox = document.createElement("div");
+            lightbox.className = "preview-lightbox";
+            lightbox.innerHTML = `
+                <button class="preview-close" aria-label="Fechar">×</button>
+                <img src="" alt="Prévia ampliada da Biblioteca ABAP PRO">
+            `;
+            document.body.appendChild(lightbox);
+
+            const lightboxImg = lightbox.querySelector("img");
+            const closeButton = lightbox.querySelector(".preview-close");
+
+            document.querySelectorAll(".preview-card").forEach(card => {
+                card.addEventListener("click", () => {
+                    const image = card.dataset.preview;
+                    lightboxImg.src = image;
+                    lightbox.classList.add("open");
+                    document.body.style.overflow = "hidden";
+                });
+            });
+
+            function closePreview() {
+                lightbox.classList.remove("open");
+                document.body.style.overflow = "";
+                lightboxImg.src = "";
+            }
+
+            closeButton.addEventListener("click", closePreview);
+
+            lightbox.addEventListener("click", (event) => {
+                if (event.target === lightbox) closePreview();
+            });
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape") closePreview();
+            });
+        })();
     </script>
 
     <script>
